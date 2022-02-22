@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game_Behavior : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Game_Behavior : MonoBehaviour
     public int maxItems = 1;
 
     public bool showWinScreen = false;
+    public bool showLossScreen = false;
+
 
     private int _itemsCollected = 0;
     public int Items
@@ -44,7 +47,22 @@ public class Game_Behavior : MonoBehaviour
         {
             _playerHP = value;
             Debug.LogFormat("Lives: {0}", _playerHP);
+            if (_playerHP <= 0)
+            {
+                labelText = "You want another life with that?";
+                showLossScreen = true;
+                Time.timeScale = 0;
+            }
+            else
+            {
+                labelText = "Ouch... that's got to hurt.";
+            }
         }
+    }
+    void RestartLevel()
+    {
+        SceneManager.LoadScene(0);
+        Time.timeScale = 1.0f;
     }
     //3
     void OnGUI()
@@ -62,10 +80,19 @@ public class Game_Behavior : MonoBehaviour
             if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "YOU WON!"))
             {
                 //3
-                //SceneManager.LoadScene(0);
+                SceneManager.LoadScene(0);
 
                 //4
                 Time.timeScale = 1.0f;
+            }
+        }
+        if (showLossScreen)
+        {
+            if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "You lose..."))
+            {
+                SceneManager.LoadScene(0);
+                Time.timeScale = 1.0f;
+                RestartLevel();
             }
         }
     }
